@@ -75,6 +75,8 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+I would suggest do this step with Anaconda Prompt.
+
 This will install all necessary Python libraries including:
 - Data manipulation: `pandas`, `numpy`
 - Machine learning: `scikit-learn`
