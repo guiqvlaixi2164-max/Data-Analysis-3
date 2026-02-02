@@ -65,7 +65,7 @@ airbnb-analysis/
 
 ```bash
 # Navigate to the folder containing this analysis
-cd path/to/your/repo/airbnb-analysis
+cd path/to/your/repo
 ```
 
 ### Step 2: Install Required Packages
