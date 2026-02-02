@@ -84,13 +84,7 @@ This will install all necessary Python libraries including:
 
 ### Step 3: Launch Jupyter Notebook
 
-```bash
-# Navigate to the code directory
-cd code
 
-# Start Jupyter Notebook server
-jupyter notebook
-```
 
 ---
 
