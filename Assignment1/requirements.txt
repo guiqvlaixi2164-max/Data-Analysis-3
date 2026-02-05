@@ -20,6 +20,9 @@ jupyter>=1.0.0
 notebook>=7.0.0
 ipykernel>=6.25.0
 
+# Shapiq
+shapiq>=1.4.1
+
 # PDF Processing (used in data cleaning skill)
 pypdf2>=3.0.0
 reportlab>=4.0.0
