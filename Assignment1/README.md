@@ -9,8 +9,9 @@ This folder contains a complete data analysis pipeline for predicting Airbnb pri
 ```
 airbnb-analysis/
 ├── code/
-│   ├── airbnb_multi_dataset_cleaning.ipynb  # Data cleaning & feature engineering
-│   └── lisbon_models_comparison.ipynb        # Model training & evaluation
+│   ├── airbnb_multi_dataset_cleaning.ipynb   # Data cleaning & feature engineering
+│   ├── lisbon_models_comparison.ipynb        # Model training & evaluation
+│   └── lisbon_models_shapiq.ipynb            # Exporation of feature importance using shapiq
 ├── data/
 │   ├── listings_2025Q1_Lisbon.csv            # Raw data: Lisbon Q1 2025
 │   ├── listings_2025Q3_Lisbon.csv            # Raw data: Lisbon Q3 2025
@@ -18,6 +19,7 @@ airbnb-analysis/
 │   ├── Lisbon_2025Q1_cleaned.csv             # Cleaned data (generated)
 │   ├── Lisbon_2025Q3_cleaned.csv             # Cleaned data (generated)
 │   └── Porto_2025Q3_cleaned.csv              # Cleaned data (generated)
+├── lisbon_models_shapiq.md                   # Report on shapiq usage
 ├── requirements.txt                           # Python dependencies
 └── README.md                                  # This file
 ```
@@ -44,6 +46,8 @@ airbnb-analysis/
    - Compares model performance using RMSE and MAE metrics
    - Analyzes feature importance for tree-based models
    - Validates models on external datasets (temporal and geographic generalization)
+  
+3. **`lisbon_models_shapiq.ipynb`** - Exporation of feature importance using shapiq
 
 ### Datasets
 
