@@ -2,6 +2,8 @@
 
 # Technical Report: Predicting Firm Fast Growth
 
+Code: [firm-fast-growth-prediction.ipynb](https://github.com/guiqvlaixi2164-max/Data-Analysis-3/blob/main/Assignment%202/code/firm-fast-growth-prediction.ipynb)
+
 ## 1. Project Overview
 
 **Objective:**
