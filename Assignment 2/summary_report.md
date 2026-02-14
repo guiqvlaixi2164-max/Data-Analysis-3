@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-This report summarizes the development and evaluation of predictive models designed to identify high-growth firms using Bisnode panel data (2010–2015). Three distinct modeling approaches were evaluated: Logistic Regression (Logit), Lasso Regularized Logistic Regression, and Random Forest.
+This report summarizes the development and evaluation of predictive models designed to identify high-growth firms using Bisnode panel data (2012–2013). Three distinct modeling approaches were evaluated: Logistic Regression (Logit), Lasso Regularized Logistic Regression, and Random Forest.
 
 **Key Findings:**
 * **Best Performing Model:** The Logit Model (M4) demonstrated superior performance in minimizing expected business loss, outperforming the Random Forest model despite similar statistical accuracy.
