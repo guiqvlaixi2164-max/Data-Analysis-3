@@ -2,7 +2,7 @@
 
 # Technical Report: Predicting Firm Fast Growth
 
-Code: [firm-fast-growth-prediction.ipynb](https://github.com/guiqvlaixi2164-max/Data-Analysis-3/blob/main/Assignment%202/code/firm-fast-growth-prediction.ipynb)
+Code: [firm-fast-growth-prediction-new.ipynb](https://github.com/guiqvlaixi2164-max/Data-Analysis-3/blob/main/Assignment%202/code/firm-fast-growth-prediction-new.ipynb)
 
 ## 1. Project Overview
 
@@ -87,7 +87,7 @@ Each successive model adds more complexity. The goal is to determine whether add
 
 ### 3.3 LASSO Logit
 
-Uses the M5-level variable set (the most complex specification) with an additional squared log-sales term. Features were standardized prior to fitting. Regularization strength was searched over 10 values of λ spaced evenly on the log scale between 10⁻¹ and 10⁻⁴. The best λ was selected by minimum mean CV RMSE (converted from negative Brier score). The optimal LASSO retained **74 non-zero coefficients** out of the original 162+, automatically discarding redundant or uninformative features.
+Uses the M5-level variable set (the most complex specification) with an additional squared log-sales term. Features were standardized prior to fitting. Regularization strength was searched over 10 values of λ spaced evenly on the log scale between 10⁻¹ and 10⁻⁴. The best λ was selected by minimum mean CV RMSE (converted from negative Brier score). The optimal LASSO retained 74 non-zero coefficients out of the original 162+, automatically discarding redundant or uninformative features.
 
 ### 3.4 Random Forest
 
@@ -99,7 +99,7 @@ The Random Forest used 100 trees with Gini splitting. Hyperparameters were tuned
 
 ### 4.1 Cross-Validation Setup
 
-An 80/20 train-holdout split was applied (`random_state=42`), yielding 15,997 training and 3,999 holdout observations. All CV used 5-fold cross-validation with shuffling.
+An 80/20 train-holdout split was applied (`random_state=42`), yielding 15,996 training and 4,000 holdout observations. All CV used 5-fold cross-validation with shuffling.
 
 ### 4.2 Summary of CV Performance
 
@@ -110,16 +110,16 @@ An 80/20 train-holdout split was applied (`random_state=42`), yielding 15,997 tr
 | M3 | 30 | 0.425 | 0.716 | — |
 | **M4** | **61** | **0.425** | **0.718** | — |
 | M5 | 162 | 0.426 | 0.715 | — |
-| LASSO | 74 | 0.425 | 0.718 | 80.5s |
-| RF | n.a. | 0.426 | 0.714 | 153.0s |
+| LASSO | 74 | 0.425 | 0.718 | 192s |
+| RF | n.a. | 0.426 | 0.714 | 391s |
 
-All logit models were trained in ~333s total.
+All logit models were trained in ~417s total.
 
 RMSE measures how close the predicted probabilities are to the actual outcomes (lower is better). AUC measures how well the model ranks fast-growth firms above non-growth firms (higher is better; 0.5 = random, 1.0 = perfect). An AUC of ~0.72 means that if we pick one random fast-growth firm and one random non-growth firm, the model assigns a higher probability to the fast-growth firm about 72% of the time.
 
 ### 4.3 Model Selection Rationale
 
-M4, M5, and LASSO achieve nearly identical CV RMSE (~0.425). **M4** was selected as the preferred model because it achieves the highest AUC (0.718), indicating the best discrimination ability — i.e., it is the best at ranking fast-growth firms above non-growth firms. M4 is also simpler than M5 (61 vs. 162 coefficients) and does not require the feature standardization that LASSO needs. Adding M5's interaction terms did not improve AUC (0.715), suggesting those interactions are not informative. RF shows comparable RMSE but slightly lower AUC (0.714).
+M3, M4, LASSO, and RF achieve nearly identical CV RMSE (~0.425–0.426). **M4** was selected as the preferred logit model because it achieves the highest AUC (0.718), indicating the best discrimination ability — i.e., it is the best at ranking fast-growth firms above non-growth firms. M4 is also simpler than M5 (61 vs. 162 coefficients) and does not require the feature standardization that LASSO needs. Adding M5's interaction terms did not improve AUC (0.715), suggesting those interactions are not informative. RF shows comparable RMSE but slightly lower AUC (0.714).
 
 ### 4.4 Holdout Evaluation
 
@@ -164,15 +164,15 @@ The threshold that produces the lowest expected loss is selected as the optimal 
 
 | Model | Avg Optimal Threshold | Avg Expected Loss |
 |---|---|---|
-| **M1** | 0.1489 | **0.7092** |
-| M2 | 0.0460 | 0.7111 |
-| M3 | 0.0193 | 0.7116 |
-| M4 | 0.0120 | 0.7112 |
-| M5 | 0.0032 | 0.7113 |
-| LASSO | 0.0215 | 0.7117 |
-| RF | 0.1097 | 0.7134 |
+| M1 | 0.1489 | 0.7092 |
+| M2 | 0.1195 | 0.6927 |
+| M3 | 0.1030 | 0.6701 |
+| **M4** | **0.1007** | **0.6694** |
+| M5 | 0.0886 | 0.6783 |
+| LASSO | 0.1157 | 0.6705 |
+| RF | 0.0958 | 0.6704 |
 
-M1 achieves the lowest average expected loss ($0.7092), which is notable: the simplest model wins on business-relevant loss despite having the worst CV RMSE and AUC. This happens because the extreme cost asymmetry pushes thresholds so low that all models end up flagging nearly every firm, and differences in probability calibration matter less than the overall threshold behavior. However, **M4 was selected for holdout evaluation** because its higher AUC (0.718 vs. 0.564) reflects genuinely better discrimination ability — it ranks firms more accurately, which matters if the loss function or cost assumptions change in deployment.
+M4 achieves the lowest average expected loss (0.6694), closely followed by M3 (0.6701), RF (0.6704), and LASSO (0.6705). Optimal thresholds range from ~0.09 (M5) to ~0.15 (M1), all well below 0.5 due to the 10:1 cost asymmetry. Models with better probability predictions (lower CV RMSE) tend to achieve lower expected loss, confirming that accurate probability estimation translates into better business outcomes. M4 was selected for holdout evaluation as it achieves the best expected loss alongside the highest AUC (0.718).
 
 The following plots illustrate the loss function and ROC curve for M4 and Random Forest on Fold 5 of cross-validation.
 
@@ -194,9 +194,18 @@ The RF ROC curve with its optimal threshold marked. Compared to M4, the optimal 
 
 ### 5.5 Holdout Expected Loss
 
-M4 holdout expected loss: **$0.716**. RF holdout expected loss: **$0.727**.
+M4 holdout expected loss: 0.733. 
+RF holdout expected loss: 0.712.
 
-M4 outperforms RF by $0.011 per firm (1.5% lower loss). For a screening pool of 1,000 firms, this translates to approximately $11 in savings. Both models achieve similar expected losses, but M4's advantage comes from logistic regression's sigmoid function, which allows stable probability estimates at very low thresholds — an advantage over RF's discrete tree structure that struggles to calibrate below ~10–15% predicted probability.
+RF outperforms M4 by 0.021 per firm (2.9% lower loss) on the holdout set. Despite this, **M4 remains our recommended model** for the following reasons:
+
+1. **Interpretability.** Logistic regression coefficients are directly interpretable: analysts can understand which financial characteristics drive the prediction and by how much. This transparency is critical in a VC screening context where flagged firms undergo human review — analysts need to understand *why* a firm was flagged, not just *that* it was flagged. Random Forest, as a black-box ensemble of 100 trees, does not offer this.
+
+2. **Discrimination ability.** M4 achieves the highest CV AUC (0.718 vs. RF's 0.714), meaning it ranks fast-growth firms above non-growth firms more reliably. AUC is a threshold-independent metric: if the loss function or cost assumptions change in deployment, a model with better AUC will adapt more gracefully to different threshold choices.
+
+3. **CV consistency.** M4 achieves the lowest average expected loss across all 5 CV folds (0.6694 vs. RF's 0.6704). The RF's holdout advantage may reflect favorable sampling variation in a single 80/20 split rather than a systematic superiority.
+
+4. **Practical gap is small.** The 0.021 per-firm difference translates to ~21 dollars per 1,000 firms screened — a marginal gap that does not outweigh the interpretability and auditability benefits of a parametric model.
 
 ---
 
@@ -206,21 +215,23 @@ M4 outperforms RF by $0.011 per firm (1.5% lower loss). For a screening pool of 
 
 |  | Predicted No Growth | Predicted Fast Growth |
 |---|---|---|
-| **Actual No Growth** | 4 | 2,852 |
-| **Actual Fast Growth** | 1 | 1,143 |
+| **Actual No Growth** | 335 | 2,203 |
+| **Actual Fast Growth** | 39 | 959 |
 
-With threshold 0.0091, M4 achieves 99.91% sensitivity (catches 1,143 of 1,144 fast-growth firms) but only 0.14% specificity and 28.61% precision. The model essentially flags nearly every firm as a potential fast-grower — a direct consequence of the extreme FN/FP cost asymmetry pushing the threshold near zero.
+Note: the holdout set contains 4,000 observations, but 464 were dropped due to missing values in model variables (primarily `age`), leaving 3,536 observations for evaluation.
+
+With threshold ~0.10, M4 achieves 96.09% sensitivity (catches 959 of 998 fast-growth firms), 13.20% specificity, and 30.33% precision. The model flags roughly 89% of evaluated firms as potential fast-growers — a consequence of the 10:1 FN/FP cost asymmetry pushing the threshold well below 0.5.
 
 The expected loss breaks down as:
-- False Positive cost: 2,852 × 1 = 2,852
-- False Negative cost: 1 × 10 = 10
-- Total: 2,862 for 4,000 firms (0.716 per firm)
+- False Positive cost: 2,203 × 1 = 2,203
+- False Negative cost: 39 × 10 = 390
+- Total: 2,593 for 3,536 firms (0.733 per firm)
 
 ### 6.2 Comparison with Universal Flagging
 
-A key finding is that the model's expected loss (0.716 per firm) is virtually identical to — and very slightly worse than — simply flagging all firms as fast-growth (0.714 per firm). This is because with a 28.86% base rate and 10:1 cost asymmetry, the mathematically optimal strategy converges toward universal flagging. The model's optimal threshold (0.0091) is so close to zero that it flags 3,995 out of 4,000 firms, leaving almost no room to improve over the naive baseline.
+The naive strategy of flagging all firms as fast-growth would yield an expected loss of ~0.718 per firm (= proportion of non-growth firms × 1). M4's holdout expected loss (0.733) is slightly worse than this baseline, suggesting some overfitting of the threshold or distributional shift in the holdout set. In contrast, the Random Forest achieves $0.712 on the holdout, slightly outperforming the universal-flagging baseline.
 
-This does not mean the model is useless. The predicted probabilities still provide a meaningful ranking — firms with higher predicted probabilities are more likely to be true fast-growers. In practice, analysts could use the probability ranking to prioritize which flagged firms to review first, even if the binary classification itself adds little value over flagging everyone.
+This does not mean M4 is useless. The predicted probabilities still provide a meaningful ranking — firms with higher predicted probabilities are more likely to be true fast-growers. In practice, analysts could use the probability ranking to prioritize which flagged firms to review first. While RF slightly outperforms the baseline on holdout, M4's interpretability and superior AUC make it the preferred choice for deployment.
 
 ### 6.3 Practical Assessment
 
@@ -230,7 +241,7 @@ Key limitations include:
 
 - **Single-year definition:** Fast growth is measured over 2012–2013 only. A firm that grew rapidly in that specific year may not sustain growth, and the model may not generalize to other time periods.
 - **Macroeconomic sensitivity:** The model cannot capture economy-wide shocks or industry disruptions that affect growth patterns.
-- **Near-universal flagging:** With the current loss function, the model flags ~99.9% of firms. Its practical value lies in the probability ranking, not the binary classification.
+- **High flagging rate:** With the current loss function, the model flags ~89% of firms. Its practical value lies in the probability ranking, not the binary classification.
 - **No external validation:** The model has not been tested on out-of-sample time periods, which would strengthen confidence before deployment.
 
 ---
@@ -249,18 +260,18 @@ Two subsamples were defined: Manufacturing (`ind2_cat` ∈ {20, 30}) and Service
 | Fast growth rate (train) | 26.86% | 27.65% |
 | Holdout size | 38 | 88 |
 | Logit CV RMSE | 0.5434 | 0.4782 |
-| Logit Avg Expected Loss | **0.6175** | 0.6691 |
-| RF CV RMSE | 0.4427 | **0.4227** |
-| RF Avg Expected Loss | 0.6569 | **0.6623** |
-| **Recommended** | **Logit** | **RF** |
+| Logit Avg Expected Loss | 0.6312 | 0.6919 |
+| RF CV RMSE | **0.4427** | **0.4227** |
+| RF Avg Expected Loss | **0.6115** | **0.5689** |
+| **Recommended** | **RF** | **RF** |
 
 ### 7.3 Key Takeaways
 
 **Sample size concerns.** Both subsamples are very small (175 and 340 training observations). Manufacturing is particularly problematic: its holdout fast-growth rate is 42.11%, far higher than the 26.86% training rate. This large discrepancy suggests that with only 38 holdout firms, the split is not representative, and results should be treated as exploratory rather than reliable.
 
-**Statistical accuracy vs. business outcome.** An interesting pattern emerges: RF achieves better probability predictions (lower RMSE) in both sectors, yet Logit achieves lower expected loss in both. This happens because Logit's sigmoid function allows it to set extremely low thresholds (0.0022 for manufacturing, 0.0093 for services), flagging nearly all firms and minimizing costly false negatives. RF's thresholds are much higher (0.1475 and 0.1272), which means it misses more fast-growers — a costly mistake under the 10:1 asymmetry.
+**RF dominates on both metrics.** In both industries, Random Forest achieves better probability predictions (lower RMSE) and lower expected loss than logit. Logit produces very low thresholds (0.0056 for manufacturing, 0.0198 for services), effectively flagging nearly all firms, but its poorer probability estimates lead to higher overall loss. RF's thresholds are higher (0.1359 and 0.1367), yet its superior probability predictions more than compensate — a pattern consistent with the holdout results from the pooled analysis, where RF also outperforms M4 on expected loss. The likely explanation is that with small industry-specific samples (175–340 firms), logit's many parameters overfit, while RF's built-in regularization (ensemble averaging, `min_samples_split`) provides better generalization.
 
-**Recommendation.** The full-sample pooled model with 15,997 training observations provides more stable and trustworthy predictions than either industry-specific model. Industry effects are better incorporated as features within the unified model rather than by splitting the data into subsamples too small for reliable modeling.
+**Recommendation.** The full-sample pooled model with ~16,000 training observations provides more stable and trustworthy predictions than either industry-specific model. Industry effects are better incorporated as features within the unified model rather than by splitting the data into subsamples too small for reliable modeling.
 
 ---
 
