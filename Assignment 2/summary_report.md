@@ -33,6 +33,11 @@ The following strategic decisions guided the modeling process and sample design:
 * **Asymmetric Cost Structure:** We defined a custom loss function where the cost of a False Negative (missed opportunity) is set at 10 units, while the cost of a False Positive (incorrect flag) is set at 1 unit.
 * **Business Logic:** This 10:1 ratio reflects a Venture Capital or B2B sales environment where missing a high-growth firm is significantly more detrimental to the portfolio than the administrative cost of screening a non-growth firm.
 
+Table 1: Loss Function Configuration
+| Outcome Type | Scenario | Assigned Cost | Business Rationale |
+| :--- | :--- | :--- | :--- |
+| False Negative (FN) | Missed a High-Growth Firm | 10 | High Opportunity Cost (Lost Revenue/Equity) |
+| False Positive (FP) | Incorrectly Flagged as High-Growth | 1 | Low Administrative Cost (Screening Effort) |
 ---
 
 ## 3. Results
@@ -61,6 +66,11 @@ The models were evaluated using 5-fold cross-validation, assessing both statisti
 * **Services Sector:** The Services sector yielded a lower logit RMSE (0.4782), indicating that growth in this sector is more strongly correlated with standard financial predictors.
 * **Manufacturing Sector:** The Manufacturing sector showed a higher logit RMSE (0.5434), suggesting that asset growth in this industry is driven by lumpy capital expenditures or external factors not fully captured by the current feature set. Random Forest outperformed Logit in both sectors on expected loss, consistent with RF's strength in small-sample, non-linear settings.
 
+Table 2: Sector-Specific Performance (RMSE)
+| Industry Sector | Logit RMSE | Prediction Difficulty | Key Takeaway |
+| :--- | :--- | :--- | :--- |
+| Services | 0.4782 | Moderate | Growth is predictable via standard financials. |
+| Manufacturing| 0.5434 | High | Growth is volatile; likely driven by external factors. |
 ---
 
 ## 5. Decision and Recommendations
